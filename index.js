@@ -114,6 +114,15 @@ app.get('/details', async (req, res) => {
                 }
             </style>
         </head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SYGFN4KMRM"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'G-SYGFN4KMRM');
+        </script>
         <body>
             <div class="details-container">
                 <div class="video-details">
@@ -225,6 +234,15 @@ app.get('/details', async (req, res) => {
             }
         </style>
     </head>
+    <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SYGFN4KMRM"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'G-SYGFN4KMRM');
+        </script>
     <body>
         <div class="details-container">
             <div class="video-details">

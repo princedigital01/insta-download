@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Video Downloader</title>
+    
+    <meta name="description" content="Download Instagram videos, reels, and photos instantly with our easy-to-use Instagram Downloader app. Save your favorite content in high quality, quickly and securely, for free. Perfect for anyone looking to store memories, share moments, or enjoy offline access to Instagram media. Compatible with all devices and user-friendly, it’s the ultimate tool for Instagram enthusiasts!">
+
+
+    <meta name="keywords" content="Instagram downloader, download Instagram videos, save Instagram reels, free Instagram downloader, Instagram video saver, download Instagram photos">
+
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="princedigital01 Company">
+
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Instagram Video Downloader - Fast, Easy, and Free">
+    <meta property="og:description"
+        content="Download Instagram videos, reels, and photos instantly with our easy-to-use Instagram Downloader app. Save your favorite content in high quality, quickly and securely, for free. Perfect for anyone looking to store memories, share moments, or enjoy offline access to Instagram media. Compatible with all devices and user-friendly, it’s the ultimate tool for Instagram enthusiasts!">
+    <meta property="og:url" content="https://princedigital01.github.io/portfolio/">
+    <meta property="og:site_name" content="Instagram Video Downloader - Fast, Easy, and Free">
+    <meta property="article:modified_time" content="2024-18-31T01:30:21+00:00">
+    <meta property="og:image" content="logo 2.webp">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Instagram Video Downloader - Fast, Easy, and Free">
+    <meta name="twitter:description" content="Download Instagram videos, reels, and photos instantly with our easy-to-use Instagram Downloader app. Save your favorite content in high quality, quickly and securely, for free.">
+    <meta name="twitter:image" content="logo 2.webp">
+    <!-- -->
+
+    <link rel="shortcut icon" href="icon.webp" type="image/webp">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-image: url(logo.webp);
+            background-position: center;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #1a1a2e;
+            color: hsl(0, 0%, 100%);
+            overflow: hidden;
+        }
+
+        .container {
+            background-color: #1c1c228a;
+            backdrop-filter: blur(4px);
+            text-align: center;
+            padding-top: 25%;
+            width: 100%;
+            height: 100%;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: slideDown 1.5s ease-out;
+        }
+
+        .input-container {
+            display: inline-flex;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .URL-input {
+            font-size: 1.3em;
+            padding: 10px;
+            border: 2px solid #0485ff;
+            outline: none;
+            width: 300px;
+        }
+
+        .convert-button {
+            font-size: 1.3em;
+            padding: 10px 20px;
+            background-color: #0485ff;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .convert-button:hover {
+            background-color: #005bb5;
+        }
+
+        .loading-icon {
+            border: 3px solid #ffffff;
+            border-top: 3px solid #0485ff;
+            border-radius: 50%;
+            width: 15px;
+            height: 15px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); }
+            to { transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Instagram Video Downloader</h1>
+        <div class="input-container">
+            <input class="URL-input" placeholder="Enter Instagram URL" id="urlInput">
+            <button class="convert-button" onclick="goToDetailsPage()">
+                <span>Download</span>
+                <div class="loading-icon" id="loadingIcon"></div>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function goToDetailsPage() {
+            const url = document.getElementById('urlInput').value;
+            const loadingIcon = document.getElementById('loadingIcon');
+            const buttonText = document.querySelector('.convert-button span');
+
+            // Show the loading spinner and hide the button text
+            loadingIcon.style.display = 'inline-block';
+            buttonText.style.display = 'none';
+
+            // Simulate loading time before redirecting
+            setTimeout(() => {
+                window.location.href = `/details?url=${encodeURIComponent(url)}`;
+            }, 1000); // Simulate a 1-second delay
+        }
+    </script>
+</body>
+</html>

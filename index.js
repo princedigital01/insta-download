@@ -113,7 +113,7 @@ app.get('/details', async (req, res) => {
                     to { transform: translateY(0); }
                 }
             </style>
-             <meta name="google-site-verification" content="giSw3mGxTuWQTvn52FDtGi_bgjzMB0uL0DyTCuH77ds" />
+            
         <!-- Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-SYGFN4KMRM"></script>
         <script>
@@ -234,7 +234,7 @@ app.get('/details', async (req, res) => {
                 to { transform: translateY(0); }
             }
         </style>
-         <meta name="google-site-verification" content="giSw3mGxTuWQTvn52FDtGi_bgjzMB0uL0DyTCuH77ds" />
+       
         <!-- Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-SYGFN4KMRM"></script>
         <script>

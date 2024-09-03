@@ -1,10 +1,8 @@
 const express = require('express');
-const axios = require('axios');
-const cheerio = require('cheerio');
-const path = require('path');
-
 const app = express();
-const PORT = process.env.PORT || 3000;
+const path = require("path");   
+const PORT = 3000
+const { ndown } = require("nayan-media-downloader")
 
 // Function to validate Instagram URL
 function isValidInstagramUrl(url) {
@@ -12,108 +10,259 @@ function isValidInstagramUrl(url) {
     return regex.test(url);
 }
 
-// Function to extract video details and URL from Instagram page
-async function getInstagramVideoDetails(url) {
-    try {
-        const response = await axios.get(url, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'
-            }
-        });
+app.use(express.static(path.join(__dirname, '')))
 
-        const $ = cheerio.load(response.data);
-
-        // Extract video URL
-        const videoUrl = $('meta[property="og:video"]').attr('content') ||
-            $('meta[property="og:video:secure_url"]').attr('content');
-
-        // Extract video details (like counts, comments, etc.)
-        const likes = $('meta[name="description"]').attr('content').match(/(\d+)\s+Likes/);
-        const comments = $('meta[name="description"]').attr('content').match(/(\d+)\s+Comments/);
-
-        if (!videoUrl) {
-            throw new Error('Unable to find video URL. Ensure the post is public and contains a video.');
-        }
-
-        return {
-            videoUrl,
-            likes: likes ? likes[1] : 'Unknown',
-            comments: comments ? comments[1] : 'Unknown'
-        };
-    } catch (error) {
-        console.error('Error fetching video details:', error.message);
-        throw new Error('Failed to fetch video details. The URL may be invalid, private, or Instagram may have blocked the request.');
-    }
-}
-
-// Serve the landing page HTML file
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Handle requests to fetch video details
 app.get('/details', async (req, res) => {
-    const { url } = req.query
-    //console.log(req);
-
-    // Validate URL
-    if (!url || !isValidInstagramUrl(url)) {
-        return res.status(400).json({ error: 'Please provide a valid Instagram post URL (e.g., https://www.instagram.com/p/...)' });
-    }
-
+    let url = req.query.url.replace(/\s+/g, '');
+    let URL = await ndown(url);
+    let msg = "download now⬇️";
     try {
-        const videoDetails = await getInstagramVideoDetails(url);
+        //console.log(URL)
+        if(!URL.status || !url || !isValidInstagramUrl(url)){
+            URL = {"data":
+                [
+                    {
+                        "url": "",
+                        "thumbnail": "error.jpeg"
+                    }
+                ]
+            }
+            msg="sorry but there is a server error please check your url😪 ";
+        }
 
-        // Render the details page with the fetched data
         res.send(`
-            <html>
-            <head>
-                <title>Video Details</title>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <style>
-                    body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; }
-                    .details { margin-top: 20px; text-align: center; }
-                    .download-button { margin-top: 20px; padding: 10px 20px; font-size: 16px; background-color: #0485ff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-                    .download-button:hover { background-color: #005bb5; }
-                </style>
-            </head>
-            <body>
-                <div class="details">
-                    <h1>Video Details</h1>
-                    <p>Likes: ${videoDetails.likes}</p>
-                    <p>Comments: ${videoDetails.comments}</p>
-                    <button class="download-button" onclick="window.location.href='/download?url=${encodeURIComponent(url)}'">Download Video</button>
+                <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Download Instagram Video</title>
+            <link rel="shortcut icon" href="icon.webp" type="image/webp">
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                    font-family: 'Arial', sans-serif;
+                }
+
+                body {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    background-color: #1a1a2e;
+                    color: #ffffff;
+                }
+
+                .details-container {
+                    text-align: center;
+                    max-width: 500px;
+                    animation: fadeIn 1.5s ease-in-out;
+                }
+
+                .video-details {
+                    background-color: #222;
+                    padding: 20px;
+                    border-radius: 10px;
+                    margin-bottom: 20px;
+                    animation: slideUp 1s ease-out;
+                }
+
+                .video-details p {
+                    margin: 10px 0;
+                }
+
+                .download-button {
+                    padding: 12px 24px;
+                    background-color: #0485ff;
+                    color: white;
+                    border: none;
+                    cursor: pointer;
+                    border-radius: 5px;
+                    font-size: 1.2em;
+                    transition: background-color 0.3s ease;
+                }
+                .a {
+                    background:yellow;
+                    padding: 12px 24px;
+                    color: black;
+                    border: none;
+                    cursor: pointer;
+                    border-radius: 5px;
+                    font-size: 1.2em;
+                    transition: background-color 0.3s ease;
+                    }
+                .a:hover{background:black;color: white;}
+
+                .download-button:hover {
+                    background-color: #005bb5;
+                }
+                
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+
+                @keyframes slideUp {
+                    from { transform: translateY(50px); }
+                    to { transform: translateY(0); }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="details-container">
+                <div class="video-details">
+                    <h2>${msg}</h2>
+                    <img alt="download" height="300" class="image" src="${URL.data[0].thumbnail}"/><br/>
+                    <a class="download-button" href="${URL.data[0].url}">Download Video</a>
+
                 </div>
-            </body>
-            </html>
+                <a  class="a" href="/">donload other videos</a>
+            </div>
+
+            <script>
+                function downloadVideo() {
+                    // Implement your download functionality here
+                    alert('Downloading video...');
+                }
+            </script>
+        </body>
+        </html>
         `);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.log(error )
+        URL = {"data":
+            [
+                {
+                    "url": "",
+                    "thumbnail": "error.jpeg"
+                }
+            ]
+        }
+        msg="sorry but there is a server error please try again later 😓";
+        res.send(`
+            <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Download Instagram Video</title>
+        <link rel="shortcut icon" href="icon.webp" type="image/webp">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Arial', sans-serif;
+            }
+
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background-color: #1a1a2e;
+                color: #ffffff;
+            }
+
+            .details-container {
+                text-align: center;
+                max-width: 500px;
+                animation: fadeIn 1.5s ease-in-out;
+            }
+
+            .video-details {
+                background-color: #222;
+                padding: 20px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                animation: slideUp 1s ease-out;
+            }
+
+            .video-details p {
+                margin: 10px 0;
+            }
+
+            .download-button {
+                padding: 12px 24px;
+                background-color: #0485ff;
+                color: white;
+                border: none;
+                cursor: pointer;
+                border-radius: 5px;
+                font-size: 1.2em;
+                transition: background-color 0.3s ease;
+            }
+            .a {
+                background:yellow;
+                padding: 12px 24px;
+                color: black;
+                border: none;
+                cursor: pointer;
+                border-radius: 5px;
+                font-size: 1.2em;
+                transition: background-color 0.3s ease;
+                }
+            .a:hover{background:black;color: white;}
+
+            .download-button:hover {
+                background-color: #005bb5;
+            }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            @keyframes slideUp {
+                from { transform: translateY(50px); }
+                to { transform: translateY(0); }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="details-container">
+            <div class="video-details">
+                <h2>${msg}</h2>
+                <img alt="download" height="300" class="image" src="${URL.data[0].thumbnail}"/><br/>
+                <a class="download-button" href="${URL.data[0].url}">Download Video</a>
+
+            </div>
+            <a  class="a" href="/">donload other videos</a>
+        </div>
+
+        <script>
+            function downloadVideo() {
+                // Implement your download functionality here
+                alert('Downloading video...');
+            }
+        </script>
+    </body>
+    </html>
+    `);
     }
 });
 
-// Endpoint to handle video download requests
-app.get('/download', async (req, res) => {
-    const { url } = req.query;
+function gen_id() {
+    let min = 100;
+    let max = 10000;
+        return Math.floor(Math.random() * (max - min) + min);
+    
+}
 
-    // Validate URL
-    if (!url || !isValidInstagramUrl(url)) {
-        return res.status(400).json({ error: 'Please provide a valid Instagram post URL (e.g., https://www.instagram.com/p/...)' });
-    }
 
-    try {
-        const videoDetails = await getInstagramVideoDetails(url);
-
-        // Send the video file directly to the client
-        res.setHeader('Content-Disposition', 'attachment; filename=instagram-video.mp4');
-        res.redirect(videoDetails.videoUrl); // Redirects directly to the video URL for download
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+app.use((req, res, next) => {
+    res.status(404).sendFile(__dirname + '/error.html');
 });
 
-// Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+
+
